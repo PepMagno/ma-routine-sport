@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ma Routine Sport - 15min Matin & Soir</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --success-color: #27ae60;
+            --light-bg: #f5f5f5;
+            --card-bg: white;
+            --border-radius: 10px;
+            --box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            --spacing-xs: 5px;
+            --spacing-sm: 10px;
+            --spacing-md: 15px;
+            --spacing-lg: 20px;
+            --spacing-xl: 30px;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: var(--spacing-md);
+            background-color: var(--light-bg);
+            color: #333;
+        }
+        
+        .container {
+            max-width: min(1200px, 95vw);
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: var(--spacing-lg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+        
+        h1, h2, h3 {
+            color: var(--primary-color);
+            margin-bottom: var(--spacing-sm);
+        }
+        
+        h1 {
+            font-size: clamp(1.5rem, 4vw, 2.2rem);
+            text-align: center;
+            margin-bottom: var(--spacing-md);
+        }
+        
+        h2 {
+            font-size: clamp(1.2rem, 3vw, 1.6rem);
+        }
+        
+        h3 {
+            font-size: clamp(1rem, 2.5vw, 1.3rem);
+        }
+        
+        .session {
+            margin-bottom: var(--spacing-xl);
+            padding: var(--spacing-md);
+            border-left: 4px solid var(--secondary-color);
+            background-color: #ecf0f1;
+            border-radius: 0 var(--border-radius) var(--border-radius) 0;
+        }
+        
+        .soir {
+            border-left-color: var(--accent-color);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: var(--spacing-md) 0;
+            font-size: clamp(0.8rem, 2vw, 1rem);
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: var(--spacing-xs) var(--spacing-sm);
+            text-align: left;
+            word-break: break-word;
+        }
+        
+        th {
+            background-color: #34495e;
+            color: white;
+        }
+        
+        .checkbox {
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            color: var(--success-color);
+            cursor: pointer;
+            text-align: center;
+        }
+        
+        .notes {
+            background-color: #fff9c4;
+            padding: var(--spacing-md);
+            border-radius: var(--border-radius);
+            margin: var(--spacing-md) 0;
+        }
+        
+        .conseil {
+            background-color: #e8f5e8;
+            padding: var(--spacing-sm);
+            border-radius: var(--border-radius);
+            margin: var(--spacing-sm) 0;
+            font-style: italic;
+        }
+        
+        .week-validation {
+            text-align: center;
+            margin: var(--spacing-lg) 0;
+            padding: var(--spacing-md);
+            background-color: #f0f7ff;
+            border-radius: var(--border-radius);
+            border: 2px dashed var(--secondary-color);
+        }
+        
+        .week-validation button {
+            background-color: var(--success-color);
+            color: white;
+            border: none;
+            padding: var(--spacing-sm) var(--spacing-md);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: clamp(0.9rem, 2vw, 1rem);
+            margin: var(--spacing-xs);
+            transition: background-color 0.3s;
+        }
+        
+        .week-validation button:hover {
+            background-color: #219955;
+        }
+        
+        .week-validation button.reset {
+            background-color: var(--accent-color);
+        }
+        
+        .week-validation button.reset:hover {
+            background-color: #c0392b;
+        }
+        
+        .week-validation button.export {
+            background-color: #3498db;
+        }
+        
+        .week-validation button.export:hover {
+            background-color: #2980b9;
+        }
+        
+        .rest-day {
+            background-color: #ffeaa7;
+            text-align: center;
+        }
+        
+        .active-rest {
+            background-color: #d5f5e3;
+            text-align: center;
+        }
+        
+        .completed {
+            color: var(--success-color);
+            font-weight: bold;
+        }
+        
+        .week-completed {
+            background-color: #d5f5e3;
+            padding: var(--spacing-sm);
+            border-radius: var(--border-radius);
+            text-align: center;
+            margin-top: var(--spacing-md);
+            display: none;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: var(--spacing-xs);
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: clamp(0.8rem, 2vw, 1rem);
+        }
+        
+        .notes-input {
+            width: 100%;
+            min-height: 40px;
+        }
+        
+        .checkbox-container {
+            display: flex;
+            justify-content: center;
+            gap: var(--spacing-xs);
+        }
+        
+        /* Responsive table */
+        .table-responsive {
+            overflow-x: auto;
+            margin: var(--spacing-md) 0;
+        }
+        
+        /* Responsive layout for smaller screens */
+        @media (max-width: 768px) {
+            .container {
+                padding: var(--spacing-sm);
+            }
+            
+            .session {
+                padding: var(--spacing-sm);
+            }
+            
+            table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+            
+            th, td {
+                padding: 6px 8px;
+            }
+            
+            .checkbox-container {
+                flex-wrap: wrap;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            body {
+                padding: var(--spacing-xs);
+            }
+            
+            .container {
+                padding: var(--spacing-sm);
+                border-radius: 8px;
+            }
+            
+            .session {
+                margin-bottom: var(--spacing-lg);
+                padding: var(--spacing-sm);
+            }
+            
+            h1 {
+                font-size: 1.4rem;
+            }
+            
+            h2 {
+                font-size: 1.2rem;
+            }
+            
+            .week-validation button {
+                display: block;
+                width: 100%;
+                margin: var(--spacing-xs) 0;
+            }
+        }
+        
+        /* Print styles */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+                max-width: 100%;
+            }
+            
+            .week-validation,
+            .conseil:last-child {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>💪 Ma Routine Sport - 15min Matin & Soir</h1>
+        
+        <div class="conseil">
+            <strong>Conseils :</strong> Échauffement 2-3 min avant chaque session • Repos 45-60s entre les séries • Bien s'hydrater
+        </div>
+
+        <!-- SESSION MATIN -->
+        <div class="session">
+            <h2>🌞 SESSION MATIN - ÉPAULES & DOS (15 minutes)</h2>
+            
+            <div class="table-responsive">
+                <table>
+                    <tr>
+                        <th>Exercice</th>
+                        <th>Séries × Répétitions</th>
+                        <th>Matériel</th>
+                        <th>Technique</th>
+                        <th>✅ Fait</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Développé Militaré</strong></td>
+                        <td>3 × 10-12</td>
+                        <td>Barre</td>
+                        <td>Assis/debout, barre devant poitrine, monter au-dessus tête</td>
+                        <td class="checkbox" data-exercise="matin-militaire">
+                            <div class="checkbox-container">☐ ☐ ☐</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Rowing Barre</strong></td>
+                        <td>3 × 10-12</td>
+                        <td>Barre</td>
+                        <td>Penché 45°, dos droit, tirer barre vers ventre</td>
+                        <td class="checkbox" data-exercise="matin-rowing">
+                            <div class="checkbox-container">☐ ☐ ☐</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Élévations Latérales</strong></td>
+                        <td>3 × 12-15</td>
+                        <td>Haltères 10kg</td>
+                        <td>Debout, élever haltères côtés jusqu'aux épaules</td>
+                        <td class="checkbox" data-exercise="matin-elevations">
+                            <div class="checkbox-container">☐ ☐ ☐</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Oiseau (Reverse Fly)</strong></td>
+                        <td>3 × 12-15</td>
+                        <td>Haltères 10kg</td>
+                        <td>Penché avant, dos plat, écarter bras comme des ailes</td>
+                        <td class="checkbox" data-exercise="matin-oiseau">
+                            <div class="checkbox-container">☐ ☐ ☐</div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- SESSION SOIR -->
+        <div class="session soir">
+            <h2>🌙 SESSION SOIR - JAMBES & GAINAGE (15 minutes)</h2>
+            
+            <div class="table-responsive">
+                <table>
+                    <tr>
+                        <th>Exercice</th>
+                        <th>Séries × Répétitions</th>
+                        <th>Matériel</th>
+                        <th>Technique</th>
+                        <th>✅ Fait</th>
+                    </tr>
+                    <tr>
+                        <td><strong>Squat Barre</strong></td>
+                        <td>3 × 10-12</td>
+                        <td>Barre chargée</td>
+                        <td>Barre épaules, descendre comme pour s'asseoir</td>
+                        <td class="checkbox" data-exercise="soir-squat">
+                            <div class="checkbox-container">☐ ☐ ☐</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Fentes Marchées</strong></td>
+                        <td>3 × 10 pas/jambe</td>
+                        <td>Haltères 10kg</td>
+                        <td>Grand pas, genoux à 90°, alterner jambes</td>
+                        <td class="checkbox" data-exercise="soir-fentes">
+                            <div class="checkbox-container">☐ ☐ ☐</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Soulevé de Terre</strong></td>
+                        <td>3 × 10-12</td>
+                        <td>Barre légère</td>
+                        <td>Jambes semi-tendues, pencher dos droit</td>
+                        <td class="checkbox" data-exercise="soir-souleve">
+                            <div class="checkbox-container">☐ ☐ ☐</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>Planche</strong></td>
+                        <td>3 × 30-45 sec</td>
+                        <td>Corps seul</td>
+                        <td>Appui avant-bras, corps gainé et droit</td>
+                        <td class="checkbox" data-exercise="soir-planche">
+                            <div class="checkbox-container">☐ ☐ ☐</div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- SUIVI HEBDOMADAIRE -->
+        <div class="session">
+            <h2>📅 SUIVI HEBDOMADAIRE</h2>
+            <p><strong>Semaine du :</strong> <input type="text" id="week-date" placeholder="JJ/MM/AAAA"></p>
+            
+            <div class="table-responsive">
+                <table>
+                    <tr>
+                        <th>Jour</th>
+                        <th>🌞 Session Matin</th>
+                        <th>🌙 Session Soir</th>
+                        <th>Notes</th>
+                    </tr>
+                    <tr>
+                        <td><strong>LUNDI</strong></td>
+                        <td class="checkbox" data-day="lundi" data-session="matin">☐ Complétée</td>
+                        <td class="checkbox" data-day="lundi" data-session="soir">☐ Complétée</td>
+                        <td><input type="text" class="notes-input" data-day="lundi" placeholder="Notes..."></td>
+                    </tr>
+                    <tr>
+                        <td><strong>MARDI</strong></td>
+                        <td colspan="3" class="rest-day">🟥 REPOS</td>
+                    </tr>
+                    <tr>
+                        <td><strong>MERCREDI</strong></td>
+                        <td class="checkbox" data-day="mercredi" data-session="matin">☐ Complétée</td>
+                        <td class="checkbox" data-day="mercredi" data-session="soir">☐ Complétée</td>
+                        <td><input type="text" class="notes-input" data-day="mercredi" placeholder="Notes..."></td>
+                    </tr>
+                    <tr>
+                        <td><strong>JEUDI</strong></td>
+                        <td colspan="3" class="rest-day">🟥 REPOS</td>
+                    </tr>
+                    <tr>
+                        <td><strong>VENDREDI</strong></td>
+                        <td class="checkbox" data-day="vendredi" data-session="matin">☐ Complétée</td>
+                        <td class="checkbox" data-day="vendredi" data-session="soir">☐ Complétée</td>
+                        <td><input type="text" class="notes-input" data-day="vendredi" placeholder="Notes..."></td>
+                    </tr>
+                    <tr>
+                        <td><strong>SAMEDI</strong></td>
+                        <td colspan="3" class="active-rest">🟦 Repos Actif (Marche, Étirements)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>DIMANCHE</strong></td>
+                        <td colspan="3" class="rest-day">🟥 REPOS COMPLET</td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- VALIDATION DE LA SEMAINE -->
+            <div class="week-validation">
+                <h3>Validation de la semaine</h3>
+                <button id="validate-week">✅ Valider la semaine complète</button>
+                <button id="export-pdf" class="export">📄 Exporter en PDF</button>
+                <button id="reset-week" class="reset">🔄 Réinitialiser la semaine</button>
+                <div id="week-completed-message" class="week-completed">
+                    <strong>Félicitations ! Vous avez complété votre semaine d'entraînement ! 🎉</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- NOTES -->
+        <div class="notes">
+            <h2>📝 MES NOTES & PROGRÈS</h2>
+            
+            <h3>Poids utilisés cette semaine :</h3>
+            <p>Développé : <input type="text" id="poids-developpe" placeholder="kg"> | Rowing : <input type="text" id="poids-rowing" placeholder="kg"> | Squat : <input type="text" id="poids-squat" placeholder="kg"> | Fentes : <input type="text" id="poids-fentes" placeholder="kg"></p>
+            
+            <h3>Sensations :</h3>
+            <p>Lundi : <input type="text" id="sensations-lundi" placeholder="Comment vous sentiez-vous?"></p>
+            <p>Mercredi : <input type="text" id="sensations-mercredi" placeholder="Comment vous sentiez-vous?"></p>
+            <p>Vendredi : <input type="text" id="sensations-vendredi" placeholder="Comment vous sentiez-vous?"></p>
+            
+            <h3>Objectifs semaine prochaine :</h3>
+            <p>
+                <input type="checkbox" id="objectif-repetitions"> Augmenter répétitions 
+                <input type="checkbox" id="objectif-charges"> Augmenter charges 
+                <input type="checkbox" id="objectif-technique"> Améliorer technique
+            </p>
+            
+            <h3>Ce dont je suis fier/fière :</h3>
+            <p><input type="text" id="fierte" placeholder="Qu'avez-vous accompli cette semaine?" style="width: 100%;"></p>
+        </div>
+
+        <div class="conseil">
+            <strong>💡 Conseil :</strong> La régularité est plus importante que la perfection ! Félicitez-vous après chaque session accomplie. Bon entraînement ! 💪
+        </div>
+    </div>
+
+    <!-- Inclure les bibliothèques pour l'export PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Gestion des cases à cocher
+            const checkboxes = document.querySelectorAll('.checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('click', function() {
+                    if (this.textContent.includes('☐')) {
+                        this.textContent = this.textContent.replace('☐', '☑');
+                        this.classList.add('completed');
+                    } else {
+                        this.textContent = this.textContent.replace('☑', '☐');
+                        this.classList.remove('completed');
+                    }
+                    checkWeekCompletion();
+                });
+            });
+
+            // Validation de la semaine
+            const validateWeekBtn = document.getElementById('validate-week');
+            const resetWeekBtn = document.getElementById('reset-week');
+            const exportPdfBtn = document.getElementById('export-pdf');
+            const weekCompletedMsg = document.getElementById('week-completed-message');
+            
+            validateWeekBtn.addEventListener('click', function() {
+                // Cocher toutes les sessions d'entraînement
+                const trainingCheckboxes = document.querySelectorAll('.checkbox[data-day]');
+                trainingCheckboxes.forEach(checkbox => {
+                    checkbox.textContent = checkbox.textContent.replace('☐', '☑');
+                    checkbox.classList.add('completed');
+                });
+                
+                // Cocher tous les exercices
+                const exerciseCheckboxes = document.querySelectorAll('.checkbox[data-exercise]');
+                exerciseCheckboxes.forEach(checkbox => {
+                    checkbox.textContent = checkbox.textContent.replace(/☐/g, '☑');
+                    checkbox.classList.add('completed');
+                });
+                
+                // Afficher le message de validation
+                weekCompletedMsg.style.display = 'block';
+                
+                // Faire défiler vers le message
+                weekCompletedMsg.scrollIntoView({ behavior: 'smooth' });
+                
+                // Générer automatiquement le PDF après validation
+                setTimeout(exporterEnPDF, 1000);
+            });
+            
+            // Bouton d'export PDF séparé
+            exportPdfBtn.addEventListener('click', exporterEnPDF);
+            
+            resetWeekBtn.addEventListener('click', function() {
+                // Décocher toutes les cases
+                const allCheckboxes = document.querySelectorAll('.checkbox');
+                allCheckboxes.forEach(checkbox => {
+                    checkbox.textContent = checkbox.textContent.replace(/☑/g, '☐');
+                    checkbox.classList.remove('completed');
+                });
+                
+                // Cacher le message de validation
+                weekCompletedMsg.style.display = 'none';
+                
+                // Réinitialiser les champs de texte
+                const inputs = document.querySelectorAll('input');
+                inputs.forEach(input => {
+                    if (input.type === 'text') input.value = '';
+                    if (input.type === 'checkbox') input.checked = false;
+                });
+            });
+
+            // Vérifier si la semaine est complète
+            function checkWeekCompletion() {
+                const trainingCheckboxes = document.querySelectorAll('.checkbox[data-day]');
+                let allCompleted = true;
+                
+                trainingCheckboxes.forEach(checkbox => {
+                    if (checkbox.textContent.includes('☐')) {
+                        allCompleted = false;
+                    }
+                });
+                
+                if (allCompleted) {
+                    weekCompletedMsg.style.display = 'block';
+                } else {
+                    weekCompletedMsg.style.display = 'none';
+                }
+            }
+            
+            // Fonction d'export PDF
+            function exporterEnPDF() {
+                // Cibler le conteneur principal
+                const element = document.querySelector('.container');
+                
+                // Options pour html2canvas
+                const options = {
+                    scale: 2, // Améliore la qualité
+                    useCORS: true, // Permet de capturer les images externes
+                    logging: false // Désactive les logs
+                };
+                
+                html2canvas(element, options).then(canvas => {
+                    const imgData = canvas.toDataURL('image/png');
+                    const pdf = new jspdf.jsPDF('p', 'mm', 'a4'); // PDF en portrait, format A4
+                    const pdfWidth = pdf.internal.pageSize.getWidth();
+                    const pdfHeight = pdf.internal.pageSize.getHeight();
+                    
+                    // Calculer les dimensions de l'image pour qu'elle tienne sur la page
+                    const imgWidth = canvas.width;
+                    const imgHeight = canvas.height;
+                    const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+                    const imgX = (pdfWidth - imgWidth * ratio) / 2;
+                    const imgY = 10; // Petite marge en haut
+                    
+                    pdf.addImage(imgData, 'PNG', imgX, imgY, imgWidth * ratio, imgHeight * ratio);
+                    
+                    // Obtenir la date pour le nom du fichier
+                    const today = new Date();
+                    const dateString = today.toLocaleDateString('fr-FR');
+                    const weekDate = document.getElementById('week-date').value || dateString;
+                    
+                    pdf.save(`Suivi_Sportif_Semaine_${weekDate.replace(/\//g, '-')}.pdf`);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
